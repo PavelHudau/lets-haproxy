@@ -1,0 +1,5 @@
+{
+    "directory_name": "my-lets-haproxy",
+    "application_name":"my-web-app",
+    "www_domain":"my-web-app.com"
+}

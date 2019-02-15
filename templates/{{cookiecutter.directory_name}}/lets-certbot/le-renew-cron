@@ -1,0 +1,8 @@
+SHELL=/bin/bash
+#PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+
+# Every day at 1:30 AM
+30 1 * * * root /usr/local/etc/le-renew-haproxy.sh &>> /var/log/lets-certbot-cron.log
+# An empty line is required at the end of this file for a valid cron file.
+# !!! KEEP THESE EMPTY LINES, cron will not work otherwise !!!
+
