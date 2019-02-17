@@ -1,4 +1,4 @@
-FROM node:11-alpine
+FROM node:10-alpine
 
 RUN mkdir -p /src/app
 WORKDIR /src/app
@@ -7,9 +7,7 @@ COPY ./the-application /src/app/
 
 RUN npm install \
     && npm install -g serve \
-    && mkdir -p /src/app
+    && mkdir -p /src/app \
+    && npm run build
 
-# EXPOSE 3000
-
-# CMD [ "npm", "start" ]
 CMD ["serve", "-s", "build", "-l", "80"]

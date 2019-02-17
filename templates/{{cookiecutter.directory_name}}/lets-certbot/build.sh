@@ -10,7 +10,7 @@ sudo docker build -t $image_name_full_name .
 sudo docker save ${image_name} > /tmp/${image_name_full_name}.tar
 
 # 3. Copy to local folder
-cp /tmp/${image_name_full_name}.tar ../DockerImages/${image_name_full_name}.tar
+sudo cp /tmp/${image_name_full_name}.tar ../DockerImages/${image_name_full_name}.tar
 
 # 4. Load container too deploy
 #sudo docker load < ./DockerImages/${new_image_name_full_name}.tar
