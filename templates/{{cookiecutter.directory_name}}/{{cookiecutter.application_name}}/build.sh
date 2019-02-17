@@ -1,5 +1,5 @@
 #!/bin/bash
-image_name=lets-haproxy
+image_name={{cookiecutter.application_name}}
 image_name_full_name=${image_name}:1.0.0
 
 # 1. Build docker image
@@ -16,12 +16,12 @@ cp /tmp/${image_name_full_name}.tar ../DockerImages/${image_name_full_name}.tar
 #sudo docker load < ./DockerImages/${new_image_name}.tar
 
 # TO RUN
-# sudo docker run --rm \
-#     -p 80:80 \
-#     -p 443:443 \
-#     -v /tmp/logs/haproxy:/dev/log \
-#     -v /etc/haproxy/certs:/etc/haproxy/certs \
-#     --name lets-haproxy lets-haproxy:1.0.0
+# sudo docker run \
+#     -v {{cookiecutter.letsencrypt_folder_full_path}}:/etc/letsencrypt \
+#     -v /home/pavel/Repositories/{{cookiecutter.application_name}}releases/lets-certbot:/usr/local/etc \
+#     -it lets-certbot:1.0.0
 
-
-#docker run --name myhaproxy --net mynetwork -p 80:80 -d haproxy
+# TO RUN AND ATTACH
+# sudo docker run --rm -it \
+#     -v /tmp/logs/certbot:/var/log \
+#     lets-certbot:1.0.0 /bin/bash
