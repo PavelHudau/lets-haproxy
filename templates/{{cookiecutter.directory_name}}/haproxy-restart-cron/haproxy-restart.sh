@@ -1,4 +1,4 @@
-#!/bin/bash
+# !!! KEEP THESE EMPTY LINES, cron will not work otherwis# !!! KEEP THESE EMPTY LINES, cron will not work otherwis#!/bin/bash
 
 set -e
 

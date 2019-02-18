@@ -47,11 +47,11 @@ copy_new_deployment_files() {
     mkdir -p /tmp/logs/cron
 
     mkdir -p /usr/local/etc/{{cookiecutter.application_name}}/
-    cp haproxy-restart.sh /usr/local/etc/{{cookiecutter.application_name}}/haproxy-restart.sh
+    cp haproxy-restart-cron/haproxy-restart.sh /usr/local/etc/{{cookiecutter.application_name}}/haproxy-restart.sh
     chmod +x /usr/local/etc/{{cookiecutter.application_name}}/haproxy-restart.sh
     cp docker-compose.yaml ${docker_compose_file}
 
-    cp haproxy-restart-cron /etc/cron.d/haproxy-restart-cron
+    cp haproxy-restart-cron/haproxy-restart-cron /etc/cron.d/haproxy-restart-cron
     # Cron files must be 644, non writable
     # See https://github.com/dokku/dokku-postgres/issues/93
     chmod 644 /etc/cron.d/haproxy-restart-cron
@@ -77,6 +77,5 @@ copy_new_deployment_files
 #sudo docker rmi ${old_image_name}
 
 ## Run after deployment
-build_images_array
 echo "[INFO] Stating docker-compose"
 sudo ${docker_compose} -f ${docker_compose_file} up -d
