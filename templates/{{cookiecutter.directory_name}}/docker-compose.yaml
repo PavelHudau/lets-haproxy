@@ -33,7 +33,7 @@ services:
       - web-net
     volumes:
       - /etc/haproxy/certs:/etc/haproxy/certs
-      - /etc/letsencrypt:/etc/letsencrypt
+      - {{cookiecutter.letsencrypt_folder_full_path}}:/etc/letsencrypt
       - /tmp/logs/certbot:/var/log
     depends_on:
       - lets-haproxy

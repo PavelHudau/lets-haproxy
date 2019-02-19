@@ -2,11 +2,51 @@
 
 set -e
 
-docker="sudo docker"
-docker_compose="sudo docker-compose"
+docker="docker"
+docker_compose="docker-compose"
 docker_compose_file="/usr/local/etc/{{cookiecutter.application_name}}/docker-compose.yaml"
 docker_images="./DockerImages"
 latest_image_files=()
+
+letsencrypt_dir="{{cookiecutter.letsencrypt_folder_full_path}}"
+domains=( {{cookiecutter.www_domain}} )
+haproxy_cert_dir="/etc/haproxy/certs"
+
+
+create_ha_proxy_certificate_if_not_exist() {
+    # Create a folder if does not exist
+    mkdir -p ${haproxy_cert_dir}
+    # Allow to write
+    chmod -R go+rwx ${haproxy_cert_dir}
+    # For HAProxy you must combine fullchain.pem and privkey.pem into a single file.
+
+    for d in "${domains[@]}"
+    do
+        certificate_file=${haproxy_cert_dir}/${d}.pem
+        if [[ -f "${certificate_file}" ]] ; then
+            echo "[INFO] Certificate file ${certificate_file} already exists, no need to create it from Let's Encrypt folder"
+        else
+            latest_certificate_folder=$(ls ${letsencrypt_dir}/live/ | grep "^${d}" | tail -1)
+            if [ -z "${latest_certificate_folder}" ] ; then
+                echo "[ERROR] Unable to find ${letsencrypt_dir}/live/${d}. Make sure the path to letsencrypt folder is correct and the domain ${d} spelled correctly."
+                exit 1
+            fi
+
+            fullchain_pem=${letsencrypt_dir}/live/${latest_certificate_folder}/fullchain.pem
+            privkey_pem=${letsencrypt_dir}/live/${latest_certificate_folder}/privkey.pem
+            if [[ -f "${fullchain_pem}" && -f "${privkey_pem}" ]] ; then
+                echo "[INFO] Combining certificate for ${d} domain from ${latest_certificate_folder}"
+                cat ${fullchain_pem} ${privkey_pem} > ${certificate_file}
+            else
+                echo "[ERROR] Unable to find ${fullchain_pem} or ${privkey_pem} or both of them"
+                exit 1
+            fi
+        fi
+    done
+
+    # Protect by allowing only to read
+    chmod -R go-rwx ${haproxy_cert_dir}
+}
 
 build_images_array() {
     latest_image_files+=($(ls ${docker_images}/ | grep "^{{cookiecutter.application_name}}" | tail -1))
@@ -21,14 +61,14 @@ load_image_if_not_exists() {
         # Load container too deploy
         ${docker} load < ${docker_images}/${image_name_and_tag}.tar
     else
-        echo "[WARN] Image ${image_name_and_tag} already exists so not loading" 
+        echo "[WARN] Image ${image_name_and_tag} already exists so not loading"
     fi
 }
 
 try_stop_old_docker_compose() {
     if [ -f ${docker_compose_file} ]; then
         echo "[INFO] stopping docker-compose and removing stale containers"
-        ${docker_compose} -f ${docker_compose_file} down  
+        ${docker_compose} -f ${docker_compose_file} down
     else
         echo "[WARN] can not stop docker-compose as ${docker_compose_file} file does not exist"
     fi
@@ -57,6 +97,14 @@ copy_new_deployment_files() {
     chmod 644 /etc/cron.d/haproxy-restart-cron
 }
 
+if [ ! -d ${letsencrypt_dir}/live ] ; then
+    echo "[ERROR] Unable to find ${letsencrypt_dir}/live. Make sure the path to letsencrypt folder is correct."
+    exit 1
+fi
+
+# First create HAProxy certificates from Let's Encrypt folder
+create_ha_proxy_certificate_if_not_exist
+
 build_images_array
 echo "[INFO] Load the following images: ${latest_image_files[@]}"
 
@@ -71,11 +119,11 @@ remove_old_deployed_files
 copy_new_deployment_files
 
 # Stop all images
-#sudo docker-compose stop
+#${docker_compose} stop
 
 ## Remove current version of image
-#sudo docker rmi ${old_image_name}
+#${docker} rmi ${old_image_name}
 
 ## Run after deployment
 echo "[INFO] Stating docker-compose"
-sudo ${docker_compose} -f ${docker_compose_file} up -d
+${docker_compose} -f ${docker_compose_file} up -d
