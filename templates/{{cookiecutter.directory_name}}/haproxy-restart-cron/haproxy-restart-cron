@@ -1,0 +1,8 @@
+SHELL=/bin/bash
+#PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+
+# Every day at 2:00 AM
+0 2 * * * root /usr/local/etc/{{cookiecutter.application_name}}/haproxy-restart.sh &>> /tmp/logs/cron/haproxy-restart-cron.log
+# An empty line is required at the end of this file for a valid cron file.
+# !!! KEEP THESE EMPTY LINES, cron will not work otherwise !!!
+

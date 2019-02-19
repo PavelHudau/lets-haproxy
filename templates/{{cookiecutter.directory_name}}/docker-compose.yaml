@@ -1,0 +1,44 @@
+version: '3'
+
+services:
+  {{cookiecutter.application_name}}:
+    image: {{cookiecutter.application_name}}:1.0.0
+    ports:
+      - 80
+    networks:
+      - web-net
+    volumes:
+      - /tmp/logs/{{cookiecutter.application_name}}:/app/logs
+    restart: always
+
+  lets-haproxy:
+    image: lets-haproxy:1.0.0
+    ports:
+      - "80:80"
+      - "443:443"
+    networks:
+      - web-net
+    volumes:
+      - /etc/haproxy/certs:/etc/haproxy/certs
+      - /tmp/logs/haproxy:/var/log
+    depends_on:
+      - {{cookiecutter.application_name}}
+    restart: always
+  
+  lets-certbot:
+    image: lets-certbot:1.0.0
+    ports:
+      - 54321
+    networks:
+      - web-net
+    volumes:
+      - /etc/haproxy/certs:/etc/haproxy/certs
+      - {{cookiecutter.letsencrypt_folder_full_path}}:/etc/letsencrypt
+      - /tmp/logs/certbot:/var/log
+    depends_on:
+      - lets-haproxy
+    restart: always
+
+networks:
+  web-net:
+    driver: bridge
