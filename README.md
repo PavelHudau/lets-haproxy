@@ -1,5 +1,7 @@
 # lets-haproxy
-Configuration which you can use to run a web-application + APIs behind [HAProxy](http://www.haproxy.org/) with [Let's Encrypt](https://letsencrypt.org/) and automatically renewed SSL certificates.
+A configuration which you can use to run a web-application + APIs behind [HAProxy](http://www.haproxy.org/) with [Let's Encrypt](https://letsencrypt.org/) and automatically renewed SSL certificates.
+
+HAProxy, Let's Encrypt certbot and your Application(s) are run as Docker containers with Docker Compose. Therefore entire configuration is easy portable to any cloud. Almost everything is automated, so there are just a few manual steps you need to make.
 
 ![diagram](/docs/diagram.jpg)
 
@@ -17,7 +19,7 @@ You need to deploy an App available on the web and your criterial are:
 1. All steps are scripted. There are minimum manul things left to do.
 
 ## Pre-requisites:
-1. letsencrypt folder with initial certificates
+1. letsencrypt folder with initial certificates. Here is a [nice article](https://hackernoon.com/easy-lets-encrypt-certificates-on-aws-79387767830b) which shows how to get it. (It's also possible to do with just lets-certbot and lets-haproxy Docker images)
 1. [Docker](https://www.docker.com/)
 1. [Docker Compose](https://docs.docker.com/compose/)
 
@@ -33,4 +35,4 @@ You need to deploy an App available on the web and your criterial are:
     ```bash
     cd output\{{directory_name you provided to cookiecutter}}
     ``` 
-    let-haproxydocumentation / instructions can be found at `output\{{directory_name you provided to cookiecutter}}\README`
+    let-haproxy documentation / instructions can be found at `output\{{directory_name you provided to cookiecutter}}\README`
