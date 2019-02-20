@@ -64,7 +64,7 @@ else
         --preferred-challenge http-01 \
         --http-01-port $http_01_port \
         --domains ${domains[0]},www.${domains[0]} \
-        --email paylikn@gmail.com \
+        --email {{cookiecutter.your_email}} \
         --logs-dir "${log_dir}/certbot"
         #--config-dir ${WORKDIR} \
         #--work-dir ${letsencrypt_certificates} \

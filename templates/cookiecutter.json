@@ -2,5 +2,6 @@
     "directory_name": "my-lets-haproxy",
     "application_name":"my-web-app",
     "www_domain":"my-web-app.com",
-    "letsencrypt_folder_full_path": "/etc/letsencrypt"
+    "letsencrypt_folder_full_path": "/etc/letsencrypt",
+    "your_email": "myemail.gmail.com"
 }
