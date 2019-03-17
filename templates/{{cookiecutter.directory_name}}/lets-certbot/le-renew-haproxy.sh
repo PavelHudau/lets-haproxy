@@ -85,7 +85,7 @@ else
         fullchain_pem=$(get_cert_file ${d})
         privkey_pem=$(get_key_file ${d})
         if [[ -f "${fullchain_pem}" && -f "${privkey_pem}" ]] ;  then
-            echo "Combining certificate for ${d} domain from ${latest_certificate_folder}"
+            echo "Combining certificate for ${d} domain from ${fullchain_pem} and ${privkey_pem}"
             cat ${fullchain_pem} ${privkey_pem} > ${haproxy_cert_dir}/${d}.pem
         else
             echo "[ERROR] Unable to find ${fullchain_pem} or ${privkey_pem} or both of them" 
